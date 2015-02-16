@@ -18,14 +18,19 @@ alice.mobileShareRun();
 ```
 参数说明
 `sCodoonShareImgUrl`:分享的图片链接
+
 `sCodoonShareLineLink`:分享出去的地址
+
 `sCodoonShareDescContent`:分享出去的内容。
+
 > **注意：**
 分享到新浪微博，这个就是正文。分享到朋友圈，这个就没用。分享给微信朋友，这个就是内容。
 
 `sCodoonShareTitle`：分享出去的标题。
+
 > **注意：**
 分享到朋友圈，这个就是分享出去的摘要。分享到微博，这个就没用。分享给朋友，这个就是标题。
 
 `sCodoonDom`:分享按钮DOM。
+
 `sCodoonOpenTopBtn`:手机顶部默认分享开关。0：关闭；1：开启
