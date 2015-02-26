@@ -5,8 +5,7 @@
 
 这里定义了手机分享功能
 ``` javascript
-var alice = new Alice();
-alice.setMobileShareInfo({
+Alice.mobileShare.setMobileShareInfo({({
 	sCodoonShareImgUrl:"xxx.jpg",
 	sCodoonShareLineLink:"http://www.baidu.com",
     sCodoonShareDescContent:"这个是content",
@@ -14,7 +13,7 @@ alice.setMobileShareInfo({
     sCodoonDom:"#btn",
     sCodoonOpenTopBtn:"1"
 })
-alice.mobileShareRun();
+Alice.mobileShare.mobileShareRun();
 ```
 参数说明
 `sCodoonShareImgUrl`:分享的图片链接
@@ -29,3 +28,14 @@ alice.mobileShareRun();
 
 `sCodoonDom`:分享按钮DOM。
 `sCodoonOpenTopBtn`:手机顶部默认分享开关。0：关闭；1：开启
+
+### 浏览器判断
+``` javascript
+Alice.isIos
+Alice.isAndroid
+```
+
+### 浏览器事件判断
+``` javascript
+Alice.browerEvents
+```
