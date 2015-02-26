@@ -15,20 +15,29 @@
 
 })();
 
-
-/**
- * 不该都写在(function)()里面啊
- * 我随便取了一个名字叫Alice
- * 实例化Alice,然后在是我们写的东西
- */
-var Alice = function(){
+var Alice = (function(){
 
   var self = this;
 
 
+  /******** 判断浏览器 开始 ********/
+  var sUserAgent = navigator.userAgent.toLowerCase(),
+      browserIsIosOrAndroid = {},
+      isIos,
+      isAndroid;
+  browserIsIosOrAndroid.bIsIphoneOs = function(){
+    return sUserAgent.match(/iphone os/i) == "iphone os";
+  }
+  browserIsIosOrAndroid.bIsAndroid = function(){
+    return function(){sUserAgent.match(/android/i) == "android"};
+  }
+  isIos = browserIsIosOrAndroid.bIsIphoneOs();
+  isAndroid = browserIsIosOrAndroid.bIsAndroid();
+  /******** 判断浏览器 结束 ********/
+
 
   /******** 判断浏览器点击事件 开始 ********/
-  this.browerEvents = checkBrowerEventsFcn();
+  var browerEvents = checkBrowerEventsFcn();
   function checkBrowerEventsFcn(){
     var WINDOW = window,
         hasTouch = 'ontouchstart' in WINDOW || window.DocumentTouch,
@@ -38,11 +47,10 @@ var Alice = function(){
   /******** 判断浏览器点击事件 结束 ********/
 
 
-
-
   /******** 分享模块 开始 ********/
+  var mobileShare = {};
 
-  this.setMobileShareInfo = function(options){
+  mobileShare.setMobileShareInfo = function(options){
     /**
      * 分享内容设置
      * [string] sCodoonShareImgUrl : 分享的图片
@@ -63,7 +71,7 @@ var Alice = function(){
     self.sCodoonOpenTopBtn       = options.sCodoonOpenTopBtn||"";
   }
 
-  this.androidRun = function(){
+  mobileShare.androidRun = function(){
     /**
      * @note
      * 这里是给Android调用
@@ -71,9 +79,9 @@ var Alice = function(){
     window.jsObj.getInfo(self.sCodoonShareTitle,self.sCodoonShareLineLink,self.sCodoonShareImgUrl,self.sCodoonShareDescContent);
   }
 
-  this.mobileShareRun = function(){
-    if (this.browserIsIosOrAndroid.bIsAndroid()) {
-      $(self.sCodoonDom).on(checkBrowerEventsFcn(),function(){
+  mobileShare.mobileShareRun = function(){
+    if (isAndroid) {
+      $(self.sCodoonDom).on(browerEvents,function(){
         if(typeof window.jsObj == 'undefined'){
           showUpgrade();
           return false;
@@ -89,7 +97,7 @@ var Alice = function(){
           window.jsObj.set_codoon_share(self.sCodoonOpenTopBtn,self.sCodoonShareImgUrl);
         }
       }
-    } else if(this.browserIsIosOrAndroid.bIsIphoneOs()) {
+    } else if(isIos) {
       if (window.WebViewJavascriptBridge) {
         isoBridge(WebViewJavascriptBridge);
       } else {
@@ -102,41 +110,62 @@ var Alice = function(){
         });
         bridge.callHandler('set_codoon_share', [self.sCodoonOpenTopBtn,self.sCodoonShareTitle,self.sCodoonShareLineLink,self.sCodoonShareImgUrl,self.sCodoonShareDescContent], function(response) {
         });
-        $(self.sCodoonDom).on(checkBrowerEventsFcn(),function(){
+        $(self.sCodoonDom).on(browerEvents,function(){
           bridge.callHandler('codoon_share', [self.sCodoonOpenTopBtn,self.sCodoonShareTitle,self.sCodoonShareLineLink,self.sCodoonShareImgUrl,self.sCodoonShareDescContent], function(response) {
           });
         });
       }
     } else {
-      $(self.sCodoonDom).on(checkBrowerEventsFcn(),function(){
+      $(self.sCodoonDom).on(browerEvents,function(){
         showUpgrade();
       });
     }
   }
+
   /******** 分享模块 结束 ********/
 
 
-
-
-  /******** 判断浏览器 开始 ********/
-  var sUserAgent = navigator.userAgent.toLowerCase();
-  this.browserIsIosOrAndroid = {
-    bIsIphoneOs:function(){
-      return function(){sUserAgent.match(/iphone os/i) == "iphone os"};
-    },
-    bIsAndroid:function(){
-      return sUserAgent.match(/android/i) == "android";
-    }
+  /******** AJAX模板 开始 ********/
+  var ajaxGet = function(url,parms,callback,type) {
+    var url = url,
+        parms = parms,
+        callback = callback,
+        type = type || "json";
+    $.get(url,parms,callback,type);
   }
-  /******** 判断浏览器 结束 ********/
-}
 
+  var ajaxPost = function(url,parms,callback,type) {
+    var url = url,
+        parms = parms,
+        callback = callback,
+        type = type || "json";
+    $.post(url,parms,callback,type);
+  }
+  /******** AJAX模板 结束 ********/
+
+  return {
+    mobileShare   : mobileShare,
+    browerEvents  : browerEvents,
+    isIos         : isIos,
+    isAndroid     : isAndroid,
+    ajaxGet       : ajaxGet,
+    ajaxPost      : ajaxPost
+  }
+
+})();
+
+/******** 支持AMD 开始 ********/
+if ( typeof define === "function" && define.amd ) {
+  define(["base"], function() {
+    return Alice;
+  });
+}
+/******** 支持AMD 结束 ********/
 
 
 /******** 关于分享还没想到好的版本处理的地方 开始 ********/
 function CodoonGetInfo (){
-  var alice = new Alice();
-  alice.mobileShareRun();
+  Alice.mobileShare.mobileShareRun();
 }
 /***
  * @note
