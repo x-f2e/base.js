@@ -126,21 +126,38 @@ var Alice = (function(){
 
 
   /******** AJAX模板 开始 ********/
-  var ajaxGet = function(url,parms,callback,type) {
-    var url = url,
-        parms = parms,
-        callback = callback,
-        type = type || "json";
-    $.get(url,parms,callback,type);
+
+  var ajaxGet = function(url,data,callback,dataType,error,timeout) {
+    ajax("GET",url,data,callback,dataType,error,timeout);
   }
 
-  var ajaxPost = function(url,parms,callback,type) {
-    var url = url,
-        parms = parms,
-        callback = callback,
-        type = type || "json";
-    $.post(url,parms,callback,type);
+  var ajaxPost = function(url,data,callback,dataType,error,timeout) {
+    ajax("POST",url,data,callback,dataType,error,timeout);
   }
+
+  /**
+   * AJAX封装到的jquery&&zepto的AJAX方法
+   * [string] url
+   * [array] data
+   * [function] callback
+   * [string] dataType
+   * [function] error
+   * [string] timeout
+   */
+  function ajax(type,url,data,callback,dataType,error,timeout) {
+    var parms = {
+        url : url,
+        data : data,
+        success : callback || function(){console.log("miss callback")},
+        dataType : dataType || "json",
+        timeout : timeout || 10000,
+        error : error || function(){},
+        type : type || "GET"
+    }
+
+    $.ajax(parms);
+  }
+
   /******** AJAX模板 结束 ********/
 
   return {
