@@ -29,7 +29,7 @@ var Alice = (function(){
     return sUserAgent.match(/iphone os/i) == "iphone os";
   }
   browserIsIosOrAndroid.bIsAndroid = function(){
-    return function(){sUserAgent.match(/android/i) == "android"};
+    return sUserAgent.match(/android/i) == "android";
   }
   isIos = browserIsIosOrAndroid.bIsIphoneOs();
   isAndroid = browserIsIosOrAndroid.bIsAndroid();
