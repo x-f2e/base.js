@@ -94,6 +94,11 @@ var Alice = (function(){
       });
       if(typeof window.jsObj != 'undefined'){
         if(typeof window.jsObj.set_codoon_share != 'undefined'){
+          /***
+           * @Note
+           * Android需要Int
+           */
+          var type = parseInt(self.sCodoonOpenTopBtn)
           window.jsObj.set_codoon_share(self.sCodoonOpenTopBtn,self.sCodoonShareImgUrl);
         }
       }
@@ -182,7 +187,7 @@ if ( typeof define === "function" && define.amd ) {
 
 /******** 关于分享还没想到好的版本处理的地方 开始 ********/
 function CodoonGetInfo (){
-  Alice.mobileShare.mobileShareRun();
+  Alice.mobileShare.androidRun();
 }
 /***
  * @note
